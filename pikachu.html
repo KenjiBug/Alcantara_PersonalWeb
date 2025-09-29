@@ -6,14 +6,51 @@
   <link rel="icon" href="pikachurunner.png" type="image/png" />
   <title>Pikachu Runner</title>
   <style>
-    :root{--bg:#f7f7f7;--ground:#555;--text:#333}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-    .wrap{display:flex;align-items:center;justify-content:center;height:100%;
-      background:linear-gradient(#e9f2ff, var(--bg));}
-    canvas{background:transparent;border:4px solid rgba(0,0,0,0.06);
-      border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.08)}
-    .ui{position:fixed;top:18px;right:18px;color:var(--text);font-size:14px}
-    .hint{position:fixed;left:18px;top:18px;color:#666;font-size:13px}
+      :root{--bg:#f7f7f7;--ground:#555;--text:#333}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial;
+      background:linear-gradient(#e9f2ff, var(--bg));
+    }
+    .wrap{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100%;
+      width:100%;
+      overflow:hidden;
+    }
+    /* --- Responsive canvas --- */
+    canvas{
+      background:transparent;
+      border:4px solid rgba(0,0,0,0.06);
+      border-radius:8px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.08);
+      max-width:95vw;     /* shrink on small screens */
+      max-height:40vh;    /* keep some vertical room on phones */
+      width:900px;        /* desktop default */
+      height:200px;       /* desktop default */
+    }
+    .ui{
+      position:fixed;
+      top:18px;
+      right:18px;
+      color:var(--text);
+      font-size:14px;
+    }
+    .hint{
+      position:fixed;
+      left:18px;
+      top:18px;
+      color:#666;
+      font-size:13px;
+      max-width:80%;
+    }
+    @media (max-width:600px){
+      .ui{font-size:12px;top:10px;right:10px;}
+      .hint{font-size:11px;left:10px;top:10px;}
+    }
   </style>
 </head>
 <body>
@@ -25,25 +62,28 @@
 
 <script>
 (() => {
+ 
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
 
-  // ensure canvas pixel size matches CSS for crispness
+  // --- Responsive resize ---
   function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
-    // use CSS width/height if present; fallback to provided attributes
-    const wCss = parseInt(getComputedStyle(canvas).width) || canvas.width || 800;
-    const hCss = parseInt(getComputedStyle(canvas).height) || canvas.height || 200;
-    canvas.width = Math.round(wCss * dpr);
+
+    // take current CSS size of the canvas element after CSS scaling
+    const rect = canvas.getBoundingClientRect();
+    const wCss = rect.width;
+    const hCss = rect.height;
+
+    canvas.width  = Math.round(wCss * dpr);
     canvas.height = Math.round(hCss * dpr);
-    canvas.style.width = wCss + 'px';
-    canvas.style.height = hCss + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS pixels
-    w = canvas.width / dpr;
-    h = canvas.height / dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    w = wCss;
+    h = hCss;
     groundY = h - 30;
-    // reposition parallax elements so they keep within bounds
+
     mountains = [{ x: 0 }, { x: w }];
     hills = [{ x: 0 }, { x: w }];
     initStars();
@@ -51,7 +91,7 @@
   window.addEventListener('resize', resizeCanvas);
 
   // Game settings & state
-  let w = canvas.width, h = canvas.height;
+   let w = canvas.width, h = canvas.height;
   let groundY = h - 30;
   let gravity = 0.9;
   let speed = 10;
