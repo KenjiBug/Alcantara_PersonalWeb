@@ -10,10 +10,16 @@
     html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
     .wrap{display:flex;align-items:center;justify-content:center;height:100%;
       background:linear-gradient(#e9f2ff, var(--bg));}
-    canvas{background:transparent;border:4px solid rgba(0,0,0,0.06);
-      border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.08)}
-    .ui{position:fixed;top:18px;right:18px;color:var(--text);font-size:14px}
-    .hint{position:fixed;left:18px;top:18px;color:#666;font-size:13px}
+    canvas {
+  width: 100%;      /* fill available width */
+  max-width: 900px; /* optional max width */
+  height: auto;      /* scale height automatically */
+  background: transparent;
+  border: 4px solid rgba(0,0,0,0.06);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
   </style>
 </head>
 <body>
@@ -619,3 +625,4 @@
 
 </body>
 </html>
+
